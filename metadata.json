@@ -1,0 +1,6 @@
+{
+  "name": "Aether: Anonymous Problem Submission Portal",
+  "description": "A safe, beautiful space for anonymous daily confessions and challenges with instant AI-powered catalytic reframing.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
