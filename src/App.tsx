@@ -12,6 +12,8 @@ export default function App() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const [personallyExperienced, setPersonallyExperienced] = useState(false);
+  const [affectsMeOrSomeone, setAffectsMeOrSomeone] = useState(false);
   
   // Real stats state
   const [stats, setStats] = useState({ totalCount: 0, lastSubmittedAt: '' });
@@ -473,6 +475,18 @@ export default function App() {
       return;
     }
 
+    const extraInfo = [];
+    if (personallyExperienced) {
+      extraInfo.push("I have personally experienced this problem.");
+    }
+    if (affectsMeOrSomeone) {
+      extraInfo.push("This problem affects me or someone I know");
+    }
+
+    const finalProblemText = extraInfo.length > 0
+      ? `${textToSubmit}\n\n[Status: ${extraInfo.join(" | ")}]`
+      : textToSubmit;
+
     setIsSubmitting(true);
     try {
       const res = await fetch('https://exemption-cabinet-binding-overhead.trycloudflare.com/api/problems', {
@@ -480,13 +494,19 @@ export default function App() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ problem: textToSubmit }),
+        body: JSON.stringify({ 
+          problem: finalProblemText,
+          personallyExperienced,
+          affectsMeOrSomeone
+        }),
       });
 
       const data = await res.json();
       if (res.ok) {
         setSubmitSuccess(true);
         setProblemText('');
+        setPersonallyExperienced(false);
+        setAffectsMeOrSomeone(false);
         fetchStats(); // Update count instantly
       } else {
         setSubmitError(data.error || "An unexpected error occurred. Please try again.");
@@ -655,7 +675,7 @@ export default function App() {
                 </h1>
 
                 <p className="text-white/60 text-sm md:text-base max-w-xl leading-relaxed mb-10">
-                  A high-performance sanctuary to release your daily friction. No metrics, no social baggage, no permanent identity linking. Your challenge is documented anonymously, completely isolated from corporate profiles.
+                  Describe a real problem you personally face. Explain what happens, why it's frustrating, and how often it occurs.
                 </p>
 
                 {/* The Submission Portal Core Card */}
@@ -689,6 +709,35 @@ export default function App() {
                         disabled={isSubmitting}
                         required
                       />
+                    </div>
+
+                    {/* Optional Checkbox Options */}
+                    <div className="space-y-3 px-1">
+                      <label className="flex items-center gap-3 cursor-pointer text-xs md:text-sm text-white/70 hover:text-white transition-colors">
+                        <input
+                          type="checkbox"
+                          checked={personallyExperienced}
+                          onChange={(e) => setPersonallyExperienced(e.target.checked)}
+                          className="rounded border-white/20 bg-white/[0.04] text-blue-500 focus:ring-blue-500/30 focus:ring-offset-0 focus:ring-1 h-4 w-4 transition-all cursor-pointer"
+                          disabled={isSubmitting}
+                        />
+                        <span className="select-none leading-relaxed">
+                          I have personally experienced this problem.
+                        </span>
+                      </label>
+
+                      <label className="flex items-center gap-3 cursor-pointer text-xs md:text-sm text-white/70 hover:text-white transition-colors">
+                        <input
+                          type="checkbox"
+                          checked={affectsMeOrSomeone}
+                          onChange={(e) => setAffectsMeOrSomeone(e.target.checked)}
+                          className="rounded border-white/20 bg-white/[0.04] text-blue-500 focus:ring-blue-500/30 focus:ring-offset-0 focus:ring-1 h-4 w-4 transition-all cursor-pointer"
+                          disabled={isSubmitting}
+                        />
+                        <span className="select-none leading-relaxed">
+                          This problem affects me or someone I know
+                        </span>
+                      </label>
                     </div>
 
                     {/* Notification States */}
