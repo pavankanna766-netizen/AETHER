@@ -189,7 +189,7 @@ export default function App() {
   const fetchStats = async () => {
     setStatsLoading(true);
     try {
-      const res = await fetch('https://kyle-integrity-retailer-cabin.trycloudflare.com/api/problems/stats');
+      const res = await fetch('https://freemason-widow-handshake.serveousercontent.com/api/problems/stats');
       if (res.ok) {
         const data = await res.json();
         setStats({
@@ -489,7 +489,7 @@ export default function App() {
 
     setIsSubmitting(true);
     try {
-      const res = await fetch('https://kyle-integrity-retailer-cabin.trycloudflare.com/api/problems', {
+      const res = await fetch('https://freemason-widow-handshake.serveousercontent.com/api/problems', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
